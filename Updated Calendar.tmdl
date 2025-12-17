@@ -2,38 +2,7 @@ createOrReplace
 
 	table Calendar
 		lineageTag: c80db942-a26a-4ced-82d7-f1179d0c9255
-
-		/// YYYY
-		column Year
-			dataType: int64
-			formatString: 0
-			displayFolder: 1. Year
-			lineageTag: 1a98bce0-40cd-47b6-a12a-ec7a9b051205
-			summarizeBy: none
-			sourceColumn: Year
-
-			annotation SummarizationSetBy = Automatic
-
-		/// I.e. Q1
-		column Quarter
-			dataType: string
-			displayFolder: 2. Quarter
-			lineageTag: 551e6043-5576-40d6-8343-02420471c5ca
-			summarizeBy: none
-			sourceColumn: Quarter
-
-			annotation SummarizationSetBy = Automatic
-
-		/// 1 if today or earlier
-		column 'Is History'
-			dataType: boolean
-			formatString: """TRUE"";""TRUE"";""FALSE"""
-			displayFolder: 6. Boolean
-			lineageTag: d3f2829d-ffe6-47a8-b11a-476ef3b4eba8
-			summarizeBy: none
-			sourceColumn: is_History
-
-			annotation SummarizationSetBy = Automatic
+		dataCategory: Time
 
 		/// YYYY-MM-DD
 		column Date
@@ -48,6 +17,17 @@ createOrReplace
 			annotation SummarizationSetBy = Automatic
 
 			annotation UnderlyingDateTimeDataType = Date
+
+		/// YYYY
+		column Year
+			dataType: int64
+			formatString: 0
+			displayFolder: 1. Year
+			lineageTag: 1a98bce0-40cd-47b6-a12a-ec7a9b051205
+			summarizeBy: none
+			sourceColumn: Year
+
+			annotation SummarizationSetBy = Automatic
 
 		/// Q1 2024
 		column 'Year Quarter'
@@ -72,6 +52,16 @@ createOrReplace
 			lineageTag: ef024846-402a-4710-8385-2e4338585348
 			summarizeBy: none
 			sourceColumn: Year Quarter Number
+
+			annotation SummarizationSetBy = Automatic
+
+		/// I.e. Q1
+		column Quarter
+			dataType: string
+			displayFolder: 2. Quarter
+			lineageTag: 551e6043-5576-40d6-8343-02420471c5ca
+			summarizeBy: none
+			sourceColumn: Quarter
 
 			annotation SummarizationSetBy = Automatic
 
@@ -206,6 +196,16 @@ createOrReplace
 
 			annotation SummarizationSetBy = Automatic
 
+		/// 1 if today or earlier
+		column 'Is History'
+			dataType: boolean
+			formatString: """TRUE"";""TRUE"";""FALSE"""
+			displayFolder: 6. Boolean
+			lineageTag: d3f2829d-ffe6-47a8-b11a-476ef3b4eba8
+			summarizeBy: none
+			sourceColumn: is_History
+
+			annotation SummarizationSetBy = Automatic
 
 		partition Calendar = m
 			mode: import
