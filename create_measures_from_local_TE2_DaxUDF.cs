@@ -2,11 +2,11 @@
 // Author: Eivind Haugen
 
 using System;
-using System. Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Linq;
-using System. Collections.Generic;
+using System.Collections.Generic;
 
 // Hide script dialog and cursor
 ScriptHelper.WaitFormVisible = false;
@@ -318,24 +318,18 @@ foreach (var m in Selected.Measures)
             newMeasureName = (prefix + m.Name + suffix).Trim(' ', '\'');
         }
         else
-        {
-            string textToExclude = ShowInputDialog(
-                "Enter text to exclude from function name.\nThe remaining text will be used as suffix:",
-                "Define Measure Suffix",
-                f.Name
-            );
-            
-            string suffix = f.Name;
-            int idx = f.Name.ToUpper().IndexOf(textToExclude. ToUpper());
-            if (idx >= 0)
-            {
-                suffix = f.Name.Remove(idx, textToExclude.Length).Trim();
-            }
-            
-            newMeasureName = string.IsNullOrWhiteSpace(suffix) 
-                ? m.Name. Trim(' ', '\'')
-                : (m.Name + " " + suffix).Trim(' ', '\'');
-        }
+{
+    // Ask user for suffix to append to the measure name
+    string suffix = ShowInputDialog(
+        "Enter suffix for the measure name:",
+        "Define Measure Suffix",
+        f. Name  // Default value
+    );
+    
+    newMeasureName = string.IsNullOrWhiteSpace(suffix) 
+        ? m.Name. Trim(' ', '\'')
+        : string.Format("{0} {1}", m.Name, suffix).Trim(' ', '\'');
+}
 
         if (measureExists)
         {
@@ -364,7 +358,9 @@ foreach (var m in Selected.Measures)
 
             newMeasure.FormatString = formatString;
             newMeasure.FormatStringExpression = formatStringExpression;
-            newMeasure.Description = m.Description + " - using function (" + f.Name + "): " + f.Description;
+            newMeasure.Description = string.IsNullOrWhiteSpace(m.Description) || string.IsNullOrWhiteSpace(f.Description)
+            ? ""
+            : m.Description + ", " + f.Description;
             
             newMeasure.Expression = FormatDax(newMeasure.Expression);
             newMeasure.Expression = "\n" + newMeasure.Expression;
