@@ -1,0 +1,264 @@
+createOrReplace
+
+	table Calendar
+		lineageTag: c80db942-a26a-4ced-82d7-f1179d0c9255
+		dataCategory: Time
+
+		/// DD/MM/YYYY
+		column Date
+			dataType: dateTime
+			isKey
+			formatString: dd/mm/yyyy
+			displayFolder: 4. Date
+			lineageTag: a0b7ae93-baf7-4cb4-8105-d00fabfe6428
+			summarizeBy: none
+			sourceColumn: Date
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation UnderlyingDateTimeDataType = Date
+
+		/// YYYY
+		column Year
+			dataType: int64
+			formatString: 0
+			displayFolder: 1. Year
+			lineageTag: 1a98bce0-40cd-47b6-a12a-ec7a9b051205
+			summarizeBy: none
+			sourceColumn: Year
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Q1 2024
+		column 'Year Quarter'
+			dataType: string
+			isHidden
+			displayFolder: 2. Quarter
+			lineageTag: 8a1105c6-f8fd-43dd-a74c-b6c547c4da0f
+			summarizeBy: none
+			sourceColumn: Year Quarter
+			sortByColumn: 'Year Quarter Number'
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Used for sorting Year Quarter
+		column 'Year Quarter Number'
+			dataType: int64
+			isHidden
+			formatString: 0
+			displayFolder: 2. Quarter
+			lineageTag: ef024846-402a-4710-8385-2e4338585348
+			summarizeBy: none
+			sourceColumn: Year Quarter Number
+
+			annotation SummarizationSetBy = Automatic
+
+		/// I.e. Q1
+		column Quarter
+			dataType: string
+			displayFolder: 2. Quarter
+			lineageTag: 551e6043-5576-40d6-8343-02420471c5ca
+			summarizeBy: none
+			sourceColumn: Quarter
+
+			annotation SummarizationSetBy = Automatic
+
+		/// I.e. January 2024
+		column 'Year Month'
+			dataType: string
+			displayFolder: 3. Month
+			lineageTag: 3c83d682-3878-4664-9726-fbadf17423ed
+			summarizeBy: none
+			sourceColumn: Year Month
+			sortByColumn: 'Year Month Number'
+
+			annotation SummarizationSetBy = Automatic
+
+		/// I.e. Jan 2024
+		column 'Year Month Short'
+			dataType: string
+			displayFolder: 3. Month
+			lineageTag: 77699cf5-6141-4cd3-8727-c64164b8cbe0
+			summarizeBy: none
+			sourceColumn: Year Month Short
+			sortByColumn: 'Year Month Number'
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Used for sorting Year Month
+		column 'Year Month Number'
+			dataType: int64
+			isHidden
+			formatString: 0
+			displayFolder: 3. Month
+			lineageTag: bc86efe2-b25e-4057-812e-ace3384a07af
+			summarizeBy: none
+			sourceColumn: Year Month Number
+
+			annotation SummarizationSetBy = Automatic
+
+		/// I.e. January
+		column Month
+			dataType: string
+			displayFolder: 3. Month
+			lineageTag: 45515a70-f04b-4ca7-b832-ddba040e00db
+			summarizeBy: none
+			sourceColumn: Month
+			sortByColumn: 'Month Number'
+
+			annotation SummarizationSetBy = Automatic
+
+		/// I.e. Jan
+		column 'Month Short'
+			dataType: string
+			displayFolder: 3. Month
+			lineageTag: 117cd883-3848-4d92-b05b-0bdec3fb99bd
+			summarizeBy: none
+			sourceColumn: Month Short
+			sortByColumn: 'Month Number'
+
+			annotation SummarizationSetBy = Automatic
+
+		/// I.e. 1 (=January)
+		column 'Month Number'
+			dataType: int64
+			formatString: 0
+			displayFolder: 3. Month
+			lineageTag: 24f7da4e-ef2c-4b0e-800f-04a0717c8ae2
+			summarizeBy: none
+			sourceColumn: Month Number
+
+			annotation SummarizationSetBy = Automatic
+
+		/// I.e. Monday
+		column 'Day of Week'
+			dataType: string
+			displayFolder: 5. Day
+			lineageTag: 03495197-cd4c-4e7d-88af-8d107a4c6986
+			summarizeBy: none
+			sourceColumn: Day of Week
+			sortByColumn: 'Day of Week Number'
+
+			annotation SummarizationSetBy = Automatic
+
+		/// I.e. Mon
+		column 'Day of Week Short'
+			dataType: string
+			displayFolder: 5. Day
+			lineageTag: 71d2cf7e-9bdf-4635-b149-739deedf7f89
+			summarizeBy: none
+			sourceColumn: Day of Week Short
+			sortByColumn: 'Day of Week Number'
+
+			annotation SummarizationSetBy = Automatic
+
+		/// 0=Monday to 6=Sunday
+		column 'Day of Week Number'
+			dataType: int64
+			isHidden
+			formatString: 0
+			displayFolder: 5. Day
+			lineageTag: 607fb59b-4fb2-4d43-9ed0-55ac8b2d6a1e
+			summarizeBy: none
+			sourceColumn: Day of Week Number
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+		/// TRUE/FALSE
+		column 'Working Day'
+			dataType: boolean
+			isHidden
+			formatString: """TRUE"";""TRUE"";""FALSE"""
+			displayFolder: 5. Day
+			lineageTag: df0f8904-f559-4c5b-aae8-70618315bbd9
+			summarizeBy: none
+			sourceColumn: Working Day
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Accumulated work day no from first date in calendar
+		column 'Working Day Number'
+			dataType: int64
+			isHidden
+			formatString: 0
+			displayFolder: 5. Day
+			lineageTag: 5e4ba9a4-846b-4335-8370-41640148f1f2
+			summarizeBy: none
+			sourceColumn: Working Day Number
+
+			changedProperty = IsHidden
+
+			annotation SummarizationSetBy = Automatic
+
+		column 'Is History'
+			dataType: int64
+			formatString: 0
+			lineageTag: daad224f-0705-47a0-b593-4348cde1c22c
+			summarizeBy: none
+			sourceColumn: Is History
+
+			annotation SummarizationSetBy = Automatic
+
+		hierarchy 'Date Hierarchy'
+			lineageTag: 4efbb080-e54f-4207-b502-ec916c2db860
+
+			level Year
+				lineageTag: 1456721e-1f61-46f1-aadc-546910202f2c
+				column: Year
+
+			level Month
+				lineageTag: c36999b4-87b7-434d-b28d-370890d79b55
+				column: Month
+
+			level Date
+				lineageTag: 0f46082d-b17f-42b8-aff4-1c127e1ed6a0
+				column: Date
+
+		partition Calendar = m
+			mode: import
+			source =
+					let
+					    Source = Sql.Databases(Server),
+					    #"Contoso V2 10M" = Source{[Name="Contoso V2 10M"]}[Data],
+					    dbo_Date = #"Contoso V2 10M"{[Schema="dbo",Item="Date"]}[Data],
+					    #"Added Conditional Column" = Table.AddColumn(dbo_Date, "Is History", each if [Date] < Date.From(DateTime.LocalNow()) then 1 else 0),
+					    #"Changed Type" = Table.TransformColumnTypes(#"Added Conditional Column",{{"Is History", Int64.Type}})
+					in
+					    #"Changed Type"
+
+		calendar Gregorian
+			lineageTag: bac589bf-af55-44b8-a44d-38764c17849e
+
+			calendarColumnGroup = year
+				primaryColumn: Year
+
+			calendarColumnGroup = quarter
+				primaryColumn: 'Year Quarter Number'
+				associatedColumn: 'Year Quarter'
+
+			calendarColumnGroup = quarterOfYear
+				primaryColumn: Quarter
+
+			calendarColumnGroup = month
+				primaryColumn: 'Year Month Number'
+				associatedColumn: 'Year Month'
+				associatedColumn: 'Year Month Short'
+
+			calendarColumnGroup = monthOfYear
+				primaryColumn: 'Month Number'
+				associatedColumn: Month
+				associatedColumn: 'Month Short'
+
+			calendarColumnGroup = date
+				primaryColumn: Date
+
+		annotation PBI_ResultType = Table
+
+		annotation PBI_NavigationStepName = Navigation
+
