@@ -1,0 +1,104 @@
+createOrReplace
+
+	table 'Model Documentation'
+		lineageTag: 653306f6-f0b2-4f1d-a64c-13ebf4d647a6
+
+		/// COUNTROWS('Model Documentation') where Type = 'Measure'
+		measure '# of Measures' = CALCULATE(COUNTROWS('Model Documentation'), 'Model Documentation'[Type] = "Measure")
+			formatString: #,0
+			lineageTag: fa23ed5f-7a5f-493b-8449-02c783c8045f
+
+		/// COUNTROWS('Model Documentation') where Type = 'Column'
+		measure '# of Columns' = CALCULATE(COUNTROWS('Model Documentation'), 'Model Documentation'[Type] = "Column")
+			formatString: #,0
+			lineageTag: 01e429cf-9391-4efb-93d7-c3ec0c35aa89
+
+		/// COUNTROWS('Model Documentation') where Type = 'Table'
+		measure '# of Tables' = CALCULATE(COUNTROWS('Model Documentation'), 'Model Documentation'[Type] = "Table")
+			formatString: #,0
+			lineageTag: e712c355-04d1-4d4d-8d89-7b0fa4664226
+
+		/// COUNTROWS('Model Documentation') where Type = 'Relationship'
+		measure '# of Relationship' = CALCULATE(COUNTROWS('Model Documentation'), 'Model Documentation'[Type] = "Relationship")
+			formatString: #,0
+			lineageTag: f49e7b6c-e484-4490-a13c-f738651edeb9
+
+		column Type
+			lineageTag: 0658e5e1-ae64-453d-ab91-1feff5caee10
+			isNameInferred
+			sourceColumn: [Type]
+
+		column Name
+			lineageTag: 88569246-44c1-41b3-9ea7-d927f9042711
+			isNameInferred
+			sourceColumn: [Name]
+
+		column Description
+			lineageTag: 2b444941-a72e-4c61-9a27-c07a11041efb
+			isNameInferred
+			sourceColumn: [Description]
+
+		column Location
+			lineageTag: 9a352944-8c07-4341-8a82-82a6fdba9d38
+			isNameInferred
+			sourceColumn: [Location]
+
+		column Expression
+			lineageTag: bf543e14-434d-4205-b52d-3cacd414488a
+			isNameInferred
+			sourceColumn: [Expression]
+
+		partition 'Model Documentation' = calculated
+			mode: import
+			source = ```
+					
+					VAR _columns =
+					    SELECTCOLUMNS(
+					        FILTER(
+					            INFO.VIEW.COLUMNS(),
+					            [Table] <> "Model Documentation" && NOT([IsHidden])
+					        ),
+					        "Type", "Column",
+					        "Name", [Name],
+					        "Description", [Description],
+					        "Location", [Table],
+					        "Expression", [Expression]
+					    )
+					VAR _measures =
+					    SELECTCOLUMNS(
+					        FILTER(
+					            INFO.VIEW.MEASURES(),
+					            [Table] <> "Model Documentation" && NOT([IsHidden])
+					        ),
+					        "Type", "Measure",
+					        "Name", [Name],
+					        "Description", [Description],
+					        "Location", [Table],
+					        "Expression", [Expression]
+					    )
+					VAR _tables =
+					    SELECTCOLUMNS(
+					        FILTER(
+					            INFO.VIEW.TABLES(),
+					            [Name] <> "Model Documentation" && [Name] <> "Calculations" && NOT([IsHidden])
+					        ),
+					        "Type", "Table",
+					        "Name", [Name],
+					        "Description", [Description],
+					        "Location", BLANK(),
+					        "Expression", [Expression]
+					    )
+					VAR _relationships =
+					    SELECTCOLUMNS(
+					        INFO.VIEW.RELATIONSHIPS(),
+					        "Type", "Relationship",
+					        "Name", [Relationship],
+					        "Description", BLANK(),
+					        "Location", BLANK(),
+					        "Expression", [Relationship]
+					    )
+					RETURN
+					    UNION(_columns, _measures, _tables, _relationships)
+					
+					```
+

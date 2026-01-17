@@ -1,0 +1,590 @@
+createOrReplace
+
+	/// Full last year (FLY), not hiding future dates after last available date
+	function 'Local.TimeIntel.TI_FLY' = ```
+			// Time intelligence accumulated this year (FY)
+			
+			
+			
+			(
+			    // Measure for TY Acc calculation
+			    baseMeasure: ANYREF
+			) => 
+			    
+			      TimeIntel.FLYcalc( baseMeasure, Calendar[Date] )
+			```
+		lineageTag: 2db42cc0-2c77-4900-8c21-95f40e2f1b82
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = PY
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Last Year (LY), same period last year, not hiding future dates
+	function 'Local.TimeIntel.TI_LY' = ```
+			
+			// Time intelligence accumulated year to date last year (LY)
+			// Filtering dates before today
+			
+			
+			
+			(
+			    // Measure for year to date last year (LY) calculation
+			
+			baseMeasure: ANYREF) => 
+			    
+			       Calculate( 
+			           baseMeasure, 
+			           SAMEPERIODLASTYEAR( 'Calendar'[Date] )
+			       )
+			        
+			```
+		lineageTag: 8f41b008-aad7-4e72-8ce5-f30316b9f08b
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = LY
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Accumulated last year to date (LYTD), hiding future dates after last available date
+	function 'Local.TimeIntel.TI_LYTD' = ```
+			
+			// Time intelligence accumulated year to date last year (LYTD)
+			// Filtering dates before today
+			
+			
+			
+			(
+			    // Measure for year to date last year (LYTD) calculation
+			
+			baseMeasure: ANYREF) => 
+			    
+			       TimeIntel.YTDcalc( baseMeasure, SAMEPERIODLASTYEAR( 'Calendar'[Date] ) )
+			    
+			```
+		lineageTag: 415d8cc9-efb2-46f2-8413-425a2492b43e
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = LYTD
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Accumulated month to date (MTD), hiding future dates after last available date
+	function 'Local.TimeIntel.TI_MTD' = ```
+			
+			// Time intelligence accumulated month to date (MTD)
+			// Filtering dates before today
+			
+			
+			
+			(
+			    // Measure for MTD calculation
+			
+			baseMeasure: ANYREF) => 
+			    
+			       TimeIntel.MTDcalc( baseMeasure, Calendar[Date] )
+			 
+			```
+		lineageTag: b3812ef9-2e30-4998-8b8e-cc8e84a1afad
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = MTD
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Accumulated month to date (MTD) complete (C) month
+	function 'Local.TimeIntel.TI_MTD_LY_C' = ```
+			
+			//Accumulated month to date (MTD) complete (C) month
+			// To compare progress to 100% of MTD last year
+			
+			(
+			    // Measure for MTD calculation
+			    baseMeasure: ANYREF
+			) => 
+			        CALCULATE(
+			            baseMeasure,
+			            DATESMTD( SAMEPERIODLASTYEAR( 'Calendar'[Date] ) )     
+			        )
+			```
+		lineageTag: 60c3edbb-39fc-4444-987d-9bd3bbf5d9fb
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = MTD LY C
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Accumulated previous year to date, not hiding future dates after last available date
+	function 'Local.TimeIntel.TI_PY' = ```
+			
+			// Time intelligence accumulated preivous (PY)
+			
+			   (
+			    // Measure for YTD calculation
+			    baseMeasure: ANYREF
+			    
+			) => 
+			        CALCULATE(
+			            baseMeasure,
+			            DATESYTD( SAMEPERIODLASTYEAR(Calendar[Date]) )
+			        )
+			        
+			   
+			```
+		lineageTag: ceda89b1-af7f-4002-af98-7a1a50fd2e3f
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = PY
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Accumulated quarter to date (QTD), hiding future dates after last available date
+	function 'Local.TimeIntel.TI_QTD' = ```
+			
+			// Time intelligence accumulated quarter to date (QTD)
+			// Filtering dates before today
+			
+			
+			
+			(
+			    // Measure for QTD calculation
+			baseMeasure: ANYREF) 
+			=> 
+			    TimeIntel.QTDcalc( baseMeasure, Calendar[Date] )
+			      
+			```
+		lineageTag: dae3be5c-f7fa-4b40-b22c-0d4a250b3b21
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = QTD
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Accumulated quarter to date (QTD) complete (C) month
+	function 'Local.TimeIntel.TI_QTD_LY_C' = ```
+			
+			(
+			        // Measure for QTD calculation
+			        baseMeasure: ANYREF
+			) => 
+			        CALCULATE(
+			            baseMeasure,
+			            DATESQTD( SAMEPERIODLASTYEAR( 'Calendar'[Date] ) ) 
+			        )
+			        
+			```
+		lineageTag: c0e0a27d-5d6f-40d3-b2ed-c96bfded8ac1
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = QTD LY C
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Rolling 12 months (365 days), hiding future dates from a date column in the date table
+	function 'Local.TimeIntel.TI_R365D' = ```
+			
+			// Reference: https://www.sqlbi.com/articles/rolling-12-months-average-in-dax/
+			
+			// Time intelligence rolling 12 months (365 days)
+			// Filtering dates before today
+			
+			
+			
+			(
+			    // Measure for Rolling 12months calculation
+			    baseMeasure: ANYREF) => 
+			    
+			       TimeIntel.RollingPeriodsDays( 
+			           baseMeasure, 
+			           Calendar[Date],
+			           MAX(Calendar[Date]),
+			           365
+			       )
+			      
+			```
+		lineageTag: 9b911824-1c17-4f16-9878-ef00b1aa450a
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = R12M
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Rolling 365 days average per month, hiding future dates from a date column in the date table
+	function 'Local.TimeIntel.TI_R365D_avg' = ```
+			
+			// Reference: https://www.sqlbi.com/articles/rolling-12-months-average-in-dax/
+			
+			
+			// Time intelligence rolling 12 months (365 days) average per month
+			// Filtering dates before today
+			
+			
+			
+			(
+			    // Measure for Rolling 12months average per month calculation
+			
+			    baseMeasure: ANYREF) => 
+			    
+			       TimeIntel.RollingPeriodsDaysAvg( 
+			           baseMeasure, 
+			           Calendar[Date], 
+			           MAX(Calendar[Date]),
+			           Calendar[Year Month Number], 
+			           365
+			       )
+			    
+			```
+		lineageTag: 0f992d23-ef26-4537-83b2-de5110c7b4df
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = R12M avg
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Rolling 365 days average per month, hiding future dates from a date column in the date table
+	function 'Local.TimeIntel.TI_R3M_avg' = ```
+			
+			// Reference: https://www.sqlbi.com/articles/rolling-12-months-average-in-dax/
+			
+			
+			// Time intelligence rolling 12 months (365 days) average per month
+			// Filtering dates before today
+			
+			
+			
+			(
+			    // Measure for Rolling 12months average per month calculation
+			
+			    baseMeasure: ANYREF) => 
+			    
+			       TimeIntel.RollingPeriodsMonthsAvg( 
+			           baseMeasure, 
+			           Calendar[Date], 
+			           MAX(Calendar[Date]),
+			           Calendar[Year Month Number], 
+			           3
+			       )
+			     
+			```
+		lineageTag: 984e9ef9-ab40-4084-8827-abde08ca463b
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = R3M avg
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Rolling 365 days average per month, hiding future dates from a date column in the date table
+	function 'Local.TimeIntel.TI_R6M_avg' = ```
+			
+			// Reference: https://www.sqlbi.com/articles/rolling-12-months-average-in-dax/
+			
+			
+			// Time intelligence rolling 12 months (365 days) average per month
+			// Filtering dates before today
+			
+			
+			
+			(
+			    // Measure for Rolling 12months average per month calculation
+			
+			    baseMeasure: ANYREF) => 
+			    
+			       TimeIntel.RollingPeriodsDaysAvg( 
+			           baseMeasure, 
+			           Calendar[Date], 
+			           MAX(Calendar[Date]),
+			           Calendar[Year Month Number], 
+			           365
+			       )
+			   
+			```
+		lineageTag: bcf4f632-7296-4ce7-82d6-e25fb47974fd
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = R6M avg
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Running Total (accumulated from the first date)
+	function 'Local.TimeIntel.TI_RunningTotal' = ```
+			
+			// Time intelligence accumulated year to date (YTD)
+			// Filtering dates before today
+			
+			
+			
+			(
+			    // Measure for YTD calculation
+			    baseMeasure: ANYREF
+			) => 
+			    //Local.TimeIntel.FilterHistoricalDatesColumn(
+			       TimeIntel.Running_Total( baseMeasure, Calendar[Date] )
+			   // )    
+			```
+		lineageTag: 5b852e06-d74c-4762-a5b1-dcbbce50f7e9
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = YTD
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Accumulated year to date (YTD), hiding future dates after last available date
+	function 'Local.TimeIntel.TI_YTD' = ```
+			
+			// Time intelligence accumulated year to date (YTD)
+			// Filtering dates before today
+			
+			
+			
+			(
+			    // Measure for YTD calculation
+			    baseMeasure: ANYREF
+			) => 
+			       TimeIntel.YTDcalc( baseMeasure, Calendar[Date] )
+			     
+			```
+		lineageTag: d1618be8-1643-4cde-ad99-9abde4bab87a
+
+		annotation FunctionCategory = Time Intelligence
+
+		annotation MeasureSuffix = YTD
+
+		annotation FolderSuffix = Time Intelligence
+
+	/// Accumulated full year to date (YTD)
+	function 'TimeIntel.FLYcalc' = ```
+			
+			//Generic model independent Year to date calculation
+			
+			(
+			    // Measure for YTD calculation
+			    baseMeasure: ANYREF,
+			    // Date column from date table
+			    dateColumn : ANYREF
+			    
+			) => 
+			
+			CALCULATE(
+			    baseMeasure,
+			    DATESBETWEEN(
+			        dateColumn,
+			        DATE(YEAR(MAX(dateColumn))-1, 1, 1),
+			        DATE(YEAR(MAX(dateColumn))-1, 12, 31)
+			    )
+			)
+			
+			```
+		lineageTag: ab61a7ec-062e-4666-b284-8f2e0a0e6161
+
+	/// Accumulated month to date (MTD)
+	function 'TimeIntel.MTDcalc' = ```
+			
+			//Generic model independent Month to date calculation
+			
+			(
+			    // Measure for MTD calculation
+			    baseMeasure: ANYREF,
+			    // Date column from date table
+			    dateColumn : ANYREF
+			    
+			) => 
+			        CALCULATE(
+			            baseMeasure,
+			            DATESMTD( dateColumn )
+			        )
+			        
+			```
+		lineageTag: e90a07da-a082-47bc-a70f-7fa59eca7422
+
+	/// Accumulated quarter to date (QTD)
+	function 'TimeIntel.QTDcalc' = ```
+			
+			//Generic model independent Quarter to date calculation
+			
+			(
+			    // Measure for QTD calculation
+			    baseMeasure: ANYREF,
+			    // Date column from date table
+			    dateColumn : ANYREF
+			    
+			) => 
+			        CALCULATE(
+			            baseMeasure,
+			            DATESQTD( dateColumn )
+			        )
+			        
+			```
+		lineageTag: 2d388b10-d453-4dd9-816f-23919102477d
+
+	/// Function to return value for the last N days. Used as input for trend calculations, such as last 12 months and last 3 months
+	function 'TimeIntel.RollingPeriodsDays' = ```
+			
+			// Reference: https://www.sqlbi.com/articles/rolling-12-months-average-in-dax/
+			
+			(
+			    // Measure for time calculation
+			    baseMeasure: ANYREF,
+			    // Date column from date table
+			    dateColumn : ANYREF,
+			    // Expression or a function to return last date, i.e. Max(Dates[Date])
+			    lastCurrentDate: ANYREF EXPR,
+			    // Number of days in the rolling period
+			    numDays: SCALAR
+			    
+			) => 
+			
+			VAR _NumOfDays = numDays
+			VAR _ReferenceDate = lastCurrentDate //(DateControl.LastHistoricalDateColumn.Specific ( )
+			VAR _PreviousDates =
+			    DATESINPERIOD (
+			        dateColumn,
+			        _ReferenceDate,
+			        -_NumOfDays,
+			        DAY
+			    )
+			VAR _Result =
+			    CALCULATE (
+			        baseMeasure,
+			        _PreviousDates
+			    )
+			RETURN 
+			    _Result
+			```
+		lineageTag: fe29e64a-807f-40c7-9de2-abe4afa388f8
+
+	/// Function to return value for the last N days as an average per selected column for average. Used as input for trend calculations, such as last 12 months average per month
+	function 'TimeIntel.RollingPeriodsDaysAvg' = ```
+			
+			// Reference: https://www.sqlbi.com/articles/rolling-12-months-average-in-dax/
+			//Calculating the average based on the selection in VALUES, such as per day or per month
+			
+			(
+			    // Measure for time calculation
+			    baseMeasure: ANYREF,
+			    // Date column from date table
+			    dateColumn : ANYREF,
+			    // Expression or a function to return last date, i.e. Max(Dates[Date])
+			    lastCurrentDate: ANYREF EXPR,
+			    // Column in date table to be used as an average, i.e. per Year Month (period)
+			    averageColumn: ANYREF,
+			    // Number of days in the rolling period
+			    numIntervals: SCALAR
+			    
+			) => 
+			
+			VAR _NumOfDays = numIntervals
+			VAR _LastCurrentDate = lastCurrentDate
+			
+			VAR _Period =
+			    DATESINPERIOD(dateColumn, _LastCurrentDate, -_NumOfDays, DAY)
+			VAR _Result =
+			    CALCULATE(
+			        AVERAGEX(
+			            VALUES(averageColumn),
+			            baseMeasure
+			        ),
+			        _Period
+			    )
+			
+			RETURN 
+			     _Result
+			```
+		lineageTag: 0aae6530-e057-44ae-8c36-edea86d7db0b
+
+	/// Function to return value for the last N days as an average per selected column for average. Used as input for trend calculations, such as last 12 months average per month
+	function 'TimeIntel.RollingPeriodsMonthsAvg' = ```
+			
+			// Reference: https://www.sqlbi.com/articles/rolling-12-months-average-in-dax/
+			//Calculating the average based on the selection in VALUES, such as per day or per month
+			
+			(
+			    // Measure for time calculation
+			    baseMeasure: ANYREF,
+			    // Date column from date table
+			    dateColumn : ANYREF,
+			    // Expression or a function to return last date, i.e. Max(Dates[Date])
+			    lastCurrentDate: ANYREF EXPR,
+			    // Column in date table to be used as an average, i.e. per Year Month (period)
+			    averageColumn: ANYREF,
+			    // Number of days in the rolling period
+			    numIntervals: SCALAR
+			    
+			) => 
+			
+			VAR _NumOfMonths = numIntervals
+			VAR _LastCurrentDate = lastCurrentDate
+			
+			VAR _Period =
+			    DATESINPERIOD(dateColumn, _LastCurrentDate, -_NumOfMonths, MONTH)
+			VAR _Result =
+			    CALCULATE(
+			        AVERAGEX(
+			            VALUES(averageColumn),
+			            baseMeasure
+			        ),
+			        _Period
+			    )
+			
+			RETURN 
+			     _Result
+			```
+		lineageTag: f36fa6ec-d5c4-4730-8984-ab363300fc90
+
+	/// Running Total, from the first date available until selected date, hiding future dates after last date returned
+	function 'TimeIntel.Running_Total' = ```
+			
+			//Generic model independent Running total calculation
+			
+			(
+			    // Measure for Running total calculation
+			    baseMeasure: ANYREF,
+			    // Date column from date table
+			    dateColumn : ANYREF
+			) => 
+			
+			
+			VAR _currdate = MAX(dateColumn)
+			RETURN
+			    CALCULATE(
+			        baseMeasure,
+			        FILTER(
+			            ALLSELECTED(dateColumn),
+			            ISONORAFTER(dateColumn, _currdate, DESC)
+			        )
+			    )
+			```
+		lineageTag: c7c6a092-f1eb-4d0e-bb57-b874e4dd63cf
+
+	/// Accumulated year to date (YTD)
+	function 'TimeIntel.YTDcalc' = ```
+			
+			//Generic model independent Year to date calculation
+			
+			(
+			    // Measure for YTD calculation
+			    baseMeasure: ANYREF,
+			    // Date column from date table
+			    dateColumn : ANYREF
+			    
+			) => 
+			        CALCULATE(
+			            baseMeasure,
+			            DATESYTD( dateColumn )
+			        )
+			        
+			```
+		lineageTag: 988029ae-82aa-4bb9-b26c-d9dab31cc2ca
+
