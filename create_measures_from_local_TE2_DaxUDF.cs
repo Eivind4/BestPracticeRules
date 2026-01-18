@@ -1,5 +1,57 @@
-// Title: Create TI measures for selected measures with Functions
+// ================================================================================================
+// Title: Create Time Intelligence Measures for Selected Measures with Functions
 // Author: Eivind Haugen
+// ================================================================================================
+//
+// DESCRIPTION:
+// This script automates the creation of time intelligence (or other calculated) measures by 
+// applying single-parameter functions to selected base measures. It generates new measures with
+// properly formatted names, display folders, and metadata based on function annotations.
+//
+// HOW TO USE:
+// 1. Select one or more base measures in your model
+// 2. Run the script
+// 3. Select one or more single-parameter functions from the dialog (functions starting with 
+//    "Local" will be shown)
+// 4. If functions are missing annotations, you'll be prompted to provide measure and folder 
+//    suffixes (once per function)
+// 5. New measures will be created for each combination of selected measure + function
+//
+// REQUIREMENTS:
+// - Select at least one measure before running the script
+// - Functions must have exactly ONE parameter (multi-parameter functions are filtered out)
+// - Functions should ideally have the required annotations (see below)
+//         , but is not applicable for all as FormatString(Expression) from the base measure will be applied 
+//
+// FUNCTION ANNOTATIONS USED:
+// The script reads the following annotations from functions to configure the generated measures:
+//
+// • MeasurePrefix         - Prefix to add to the measure name (e.g., "PY" → "PY Sales")
+// • MeasureSuffix         - Suffix to add to the measure name (e.g., "LY" → "Sales LY")
+// • FolderPrefix          - Prefix for the display folder path
+// • FolderSuffix          - Suffix for the display folder path (e.g., "Last Year")
+// • FormatString          - Format string for the new measure (e.g., "#,0.0%")
+// • FormatStringExpression - Dynamic format string expression
+// • Description           - Description to append to the base measure's description
+//
+// If MeasurePrefix/MeasureSuffix are missing:  You'll be prompted to enter a suffix for each function
+// If FolderPrefix/FolderSuffix are missing: You'll be prompted to enter a folder suffix for each function
+// If FormatString is missing: The script uses the base measure's format (or percentage format for 
+//                             functions containing "%", "PCT", "IDX", or "INDEX" in their name)
+//
+// VALIDATION CHECKS:
+// - Warns if base measures are missing FormatString/FormatStringExpression
+// - Warns if measures or functions are missing descriptions
+// - Prevents duplicate measure creation (checks if measure with same expression already exists)
+// - Shows a summary of any measures that already exist and were skipped
+//
+// EXAMPLE:
+// Base measure: [Sales] with FormatString "#,0"
+// Function: Local_PY with annotation MeasureSuffix = "PY"
+// Result: New measure [Sales PY] with expression "Local_PY([Sales])" and format "#,0"
+//
+// ================================================================================================
+
 
 using System;
 using System.Text.RegularExpressions;
@@ -265,6 +317,28 @@ if (missingFormatString.Any() || missingMeasureDescription.Any() || missingFunct
     }
 }
 
+// Pre-process functions to get user input for missing suffixes ONCE per function
+var functionSuffixes = new Dictionary<string, string>();
+
+foreach (var f in selectedFunctions)
+{
+    string measureSuffix = f.GetAnnotation("MeasureSuffix");
+    string measurePrefix = f.GetAnnotation("MeasurePrefix");
+    
+    // Only ask for suffix if both prefix and suffix annotations are missing
+    if (string. IsNullOrWhiteSpace(measurePrefix) && string.IsNullOrWhiteSpace(measureSuffix))
+    {
+        string suffix = ShowInputDialog(
+            "Enter suffix for the measure name, from the selected function:",
+            "Define Measure Suffix",
+            f. Name  // Default value
+        );
+        
+        functionSuffixes[f.Name] = suffix ??  "";
+    }
+}
+
+// Now loop through measures and functions
 foreach (var m in Selected.Measures)
 {
     foreach (var f in selectedFunctions)
@@ -272,10 +346,10 @@ foreach (var m in Selected.Measures)
         string formatString;
         string formatStringExpression;
     
-        string annotationFormatString = f. GetAnnotation("FormatString");
+        string annotationFormatString = f.GetAnnotation("FormatString");
         string annotationFormatStringExpression = f.GetAnnotation("FormatStringExpression");
         
-        if (!string.IsNullOrWhiteSpace(annotationFormatString))
+        if (! string.IsNullOrWhiteSpace(annotationFormatString))
         {
             formatString = annotationFormatString;
         }
@@ -283,8 +357,8 @@ foreach (var m in Selected.Measures)
         {
             bool isPercentage = f.Name.ToUpper().Contains("%") ||
                                f.Name.ToUpper().Contains("PCT") ||
-                               f.Name. ToUpper().Contains("IDX") ||
-                               f.Name. ToUpper().Contains("INDEX");
+                               f.Name.ToUpper().Contains("IDX") ||
+                               f. Name.ToUpper().Contains("INDEX");
             
             formatString = isPercentage ? "#,0.0%\u003B-#,0.0%\u003B#,0.0%" : m.FormatString;
         }
@@ -303,7 +377,7 @@ foreach (var m in Selected.Measures)
         bool measureExists = Model.AllMeasures.Any(existingMeasure =>
             existingMeasure. Expression. Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "") 
             == expectedDaxExpression. Replace(" ", "").Replace("\n", "").Replace("\r", "").Replace("\t", "")
-            && existingMeasure.Table.Name == m.Table.Name);
+            && existingMeasure. Table.Name == m.Table. Name);
 
         string measurePrefix = f.GetAnnotation("MeasurePrefix");
         string measureSuffix = f.GetAnnotation("MeasureSuffix");
@@ -313,23 +387,19 @@ foreach (var m in Selected.Measures)
         if (!string.IsNullOrWhiteSpace(measurePrefix) || !string.IsNullOrWhiteSpace(measureSuffix))
         {
             string prefix = !string.IsNullOrWhiteSpace(measurePrefix) ? measurePrefix.Trim(' ', '\'') + " " : "";
-            string suffix = !string.IsNullOrWhiteSpace(measureSuffix) ? " " + measureSuffix.Trim(' ', '\'') : "";
+            string suffix = !string.IsNullOrWhiteSpace(measureSuffix) ? " " + measureSuffix. Trim(' ', '\'') : "";
             
             newMeasureName = (prefix + m.Name + suffix).Trim(' ', '\'');
         }
         else
-{
-    // Ask user for suffix to append to the measure name
-    string suffix = ShowInputDialog(
-        "Enter suffix for the measure name:",
-        "Define Measure Suffix",
-        f. Name  // Default value
-    );
-    
-    newMeasureName = string.IsNullOrWhiteSpace(suffix) 
-        ? m.Name. Trim(' ', '\'')
-        : string.Format("{0} {1}", m.Name, suffix).Trim(' ', '\'');
-}
+        {
+            // Use the pre-collected suffix for this function
+            string suffix = functionSuffixes[f.Name];
+            
+            newMeasureName = string.IsNullOrWhiteSpace(suffix) 
+                ? m.Name. Trim(' ', '\'')
+                : string.Format("{0} {1}", m.Name, suffix).Trim(' ', '\'');
+        }
 
         if (measureExists)
         {
@@ -342,16 +412,16 @@ foreach (var m in Selected.Measures)
 
             string displayFolder;
 
-            if (!string.IsNullOrWhiteSpace(folderPrefix) || !string.IsNullOrWhiteSpace(folderSuffix))
+            if (!string. IsNullOrWhiteSpace(folderPrefix) || !string.IsNullOrWhiteSpace(folderSuffix))
             {
                 string prefix = !string.IsNullOrWhiteSpace(folderPrefix) ? folderPrefix.Trim() + " " : "";
-                string suffix = !string.IsNullOrWhiteSpace(folderSuffix) ? " - " + folderSuffix. Trim() : "";
+                string suffix = ! string.IsNullOrWhiteSpace(folderSuffix) ? " - " + folderSuffix.Trim() : "";
                 
                 displayFolder = (prefix + m.DisplayFolder + "\\" + m.Name + suffix).Trim();
             }
             else
             {
-                displayFolder = m. DisplayFolder + "\\" + m. Name;
+                displayFolder = m.DisplayFolder + "\\" + m.Name;
             }
 
             var newMeasure = m.Table.AddMeasure(newMeasureName, expectedDaxExpression, displayFolder);
@@ -359,11 +429,11 @@ foreach (var m in Selected.Measures)
             newMeasure.FormatString = formatString;
             newMeasure.FormatStringExpression = formatStringExpression;
             newMeasure.Description = string.IsNullOrWhiteSpace(m.Description) || string.IsNullOrWhiteSpace(f.Description)
-            ? ""
-            : m.Description + ", " + f.Description;
+                ? ""
+                : m.Description + ", " + f.Description;
             
-            newMeasure.Expression = FormatDax(newMeasure.Expression);
-            newMeasure.Expression = "\n" + newMeasure.Expression;
+            newMeasure.FormatDax();
+            newMeasure.Expression = "\n" + newMeasure. Expression;
         }
     }
 }
