@@ -1,5 +1,6 @@
 createOrReplace
 
+	/// Date table
 	table Calendar
 		lineageTag: c80db942-a26a-4ced-82d7-f1179d0c9255
 		dataCategory: Time
@@ -17,6 +18,8 @@ createOrReplace
 			annotation SummarizationSetBy = Automatic
 
 			annotation UnderlyingDateTimeDataType = Date
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["RELATIONSHIP_COLUMNS_SHOULD_BE_OF_INTEGER_DATA_TYPE"]}
 
 		/// YYYY
 		column Year
@@ -205,6 +208,8 @@ createOrReplace
 
 			annotation SummarizationSetBy = Automatic
 
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["FORMAT_FLAG_COLUMNS_AS_YES/NO_VALUE_STRINGS"]}
+
 		hierarchy 'Date Hierarchy'
 			lineageTag: 4efbb080-e54f-4207-b502-ec916c2db860
 
@@ -231,6 +236,8 @@ createOrReplace
 					    #"Changed Type" = Table.TransformColumnTypes(#"Added Conditional Column",{{"Is History", Int64.Type}})
 					in
 					    #"Changed Type"
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["MINIMIZE_POWER_QUERY_TRANSFORMATIONS"]}
 
 		calendar Gregorian
 			lineageTag: bac589bf-af55-44b8-a44d-38764c17849e

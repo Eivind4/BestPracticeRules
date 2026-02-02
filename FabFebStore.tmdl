@@ -1,0 +1,116 @@
+createOrReplace
+
+	table Store
+		lineageTag: 9b30a64f-cbab-4834-9105-f6e8e131c88b
+
+		/// Unique internal identifier for the store
+		column StoreKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			isAvailableInMdx: false
+			lineageTag: 516eccd0-65a9-41cc-b24b-e3286d993d46
+			summarizeBy: none
+			sourceColumn: StoreKey
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["MARK_PRIMARY_KEYS"]}
+
+		/// Numeric store code used in legacy systems and integrations
+		column 'Store Code'
+			dataType: int64
+			formatString: 0
+			lineageTag: c9be2ed7-d1d9-49d9-b018-180d1672f40f
+			summarizeBy: none
+			sourceColumn: Store Code
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Country where the store is located
+		column Country
+			dataType: string
+			lineageTag: 795d4db4-397d-48dc-8702-817e604fb35e
+			dataCategory: Country
+			summarizeBy: none
+			sourceColumn: Country
+
+			annotation SummarizationSetBy = Automatic
+
+		/// State or region where the store is located
+		column State
+			dataType: string
+			lineageTag: a4958153-34f2-423b-998d-e835f4d91599
+			summarizeBy: none
+			sourceColumn: State
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Official store name
+		column Name
+			dataType: string
+			lineageTag: b8cbed21-825d-441b-8f4f-601fef630155
+			summarizeBy: none
+			sourceColumn: Name
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Store floor area, in square meters
+		column 'Square Meters'
+			dataType: int64
+			formatString: 0
+			lineageTag: 11b7c8c3-82fd-4381-9284-7a6938fd00b5
+			summarizeBy: none
+			sourceColumn: Square Meters
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Date when the store first opened (business date)
+		column 'Open Date'
+			dataType: dateTime
+			formatString: dd/mm/yyyy
+			lineageTag: 1565c522-323a-458e-b976-b16c41bf40de
+			summarizeBy: none
+			sourceColumn: Open Date
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation UnderlyingDateTimeDataType = Date
+
+		/// Date when the store closed (if applicable)
+		column 'Close Date'
+			dataType: dateTime
+			formatString: dd/mm/yyyy
+			lineageTag: 06d5cabc-5bb7-43e9-a691-78166be6479c
+			summarizeBy: none
+			sourceColumn: Close Date
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation UnderlyingDateTimeDataType = Date
+
+		/// Current operational status of the store (e.g., Open, Closed)
+		column Status
+			dataType: string
+			lineageTag: be28b028-fb39-47b2-9742-98e0e40ade07
+			summarizeBy: none
+			sourceColumn: Status
+
+			annotation SummarizationSetBy = Automatic
+
+		partition Store = m
+			mode: import
+			source =
+					let
+					    Source = Sql.Databases(Server),
+					    Database = Source{[Name=Database]}[Data],
+					    dbo_Store = Database{[Schema="dbo",Item="Store"]}[Data]
+					in
+					    dbo_Store
+
+		annotation PBI_ResultType = Table
+
+		annotation PBI_NavigationStepName = Navigation
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["OBJECTS_WITH_NO_DESCRIPTION"]}
+

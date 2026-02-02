@@ -1,0 +1,163 @@
+createOrReplace
+
+	table Product
+		lineageTag: 30d51099-9182-4805-8640-4e935922ae23
+
+		/// Unique identifier for each product in the catalog
+		column ProductKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			isAvailableInMdx: false
+			lineageTag: 74400d17-e1b6-456e-8fa2-2850ff493aad
+			summarizeBy: none
+			sourceColumn: ProductKey
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["MARK_PRIMARY_KEYS"]}
+
+		/// Product SKU or stock keeping unit code
+		column 'Product Code'
+			dataType: string
+			lineageTag: 5e28d45b-fa8a-4e5e-85c2-722334c22029
+			summarizeBy: none
+			sourceColumn: Product Code
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Full descriptive name of the product
+		column 'Product Name'
+			dataType: string
+			lineageTag: 04da1f3c-4a56-4565-93fd-5368cdf3c421
+			summarizeBy: none
+			sourceColumn: Product Name
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Company that manufactures the product
+		column Manufacturer
+			dataType: string
+			lineageTag: 4a34302f-ec56-498f-a39b-43978fc51870
+			summarizeBy: none
+			sourceColumn: Manufacturer
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Brand name under which the product is sold
+		column Brand
+			dataType: string
+			lineageTag: f10c6734-9804-49c9-9f42-a7ff2e3be92c
+			summarizeBy: none
+			sourceColumn: Brand
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Primary color of the product
+		column Color
+			dataType: string
+			lineageTag: 0688a4f3-f0a4-4de4-bbe6-e598488fc55f
+			summarizeBy: none
+			sourceColumn: Color
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Unit of measurement for product weight (e.g., kg, lbs)
+		column 'Weight Unit Measure'
+			dataType: string
+			lineageTag: 04b144e6-7d82-4999-b044-a4b7dda920f6
+			summarizeBy: none
+			sourceColumn: Weight Unit Measure
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Weight of the product in the specified unit measure
+		column Weight
+			dataType: double
+			lineageTag: 848c4e72-c81f-4621-b6fc-bb75d98d6d24
+			summarizeBy: none
+			sourceColumn: Weight
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+		/// Cost per unit paid to acquire or manufacture the product
+		column 'Unit Cost'
+			dataType: decimal
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: 7a232987-c447-44c3-ba07-2e3ca7f4d779
+			summarizeBy: none
+			sourceColumn: Unit Cost
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		/// Selling price per unit for the product
+		column 'Unit Price'
+			dataType: decimal
+			formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+			lineageTag: e38f4725-db48-451a-8c1d-5dd58b853797
+			summarizeBy: none
+			sourceColumn: Unit Price
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+		/// Numeric code identifying the product subcategory
+		column 'Subcategory Code'
+			dataType: int64
+			formatString: 0
+			lineageTag: 97799974-e173-480f-8b7b-c409d158f3e0
+			summarizeBy: none
+			sourceColumn: Subcategory Code
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Product subcategory grouping (e.g., Laptops, Tablets)
+		column Subcategory
+			dataType: string
+			lineageTag: 742861f7-3ef5-4b9f-a1dd-85a6a95e7839
+			summarizeBy: none
+			sourceColumn: Subcategory
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Numeric code identifying the product category
+		column 'Category Code'
+			dataType: int64
+			formatString: 0
+			lineageTag: 0b2dcb3c-dc9f-47c5-8f4a-cc41aa2aeb58
+			summarizeBy: none
+			sourceColumn: Category Code
+
+			annotation SummarizationSetBy = Automatic
+
+		/// High-level product category (e.g., Electronics, Home Goods)
+		column Category
+			dataType: string
+			lineageTag: 5d64bbfb-0699-4dc9-a26a-8b243b065003
+			summarizeBy: none
+			sourceColumn: Category
+
+			annotation SummarizationSetBy = Automatic
+
+		partition Product = m
+			mode: import
+			source =
+					let
+					    Source = Sql.Databases(Server),
+					    Database = Source{[Name=Database]}[Data],
+					    dbo_Product = Database{[Schema="dbo",Item="Product"]}[Data],
+					    #"Filtered Rows" = Table.SelectRows(dbo_Product, each ([Color] <> "Blue" and [Color] <> "Gold" and [Color] <> "Green" and [Color] <> "Pink" and [Color] <> "Red" and [Color] <> "Silver" and [Color] <> "White"))
+					in
+					    #"Filtered Rows"
+
+		annotation PBI_ResultType = Table
+
+		annotation PBI_NavigationStepName = Navigation
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["OBJECTS_WITH_NO_DESCRIPTION"]}
+

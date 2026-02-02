@@ -1,0 +1,152 @@
+createOrReplace
+
+	table Customer
+		lineageTag: 75d7213a-419f-486d-8e03-185c45146d88
+
+		/// Unique internal identifier for the customer
+		column CustomerKey
+			dataType: int64
+			isHidden
+			formatString: 0
+			isAvailableInMdx: false
+			lineageTag: 7c537edd-69ee-4ea2-9e6b-061697df4db0
+			summarizeBy: none
+			sourceColumn: CustomerKey
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["MARK_PRIMARY_KEYS"]}
+
+		/// Customer's gender
+		column Gender
+			dataType: string
+			lineageTag: 0dbd41b5-6677-4af4-b2b7-7919a1535e4f
+			summarizeBy: none
+			sourceColumn: Gender
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Customer's full name
+		column Name
+			dataType: string
+			lineageTag: 97119290-f7b6-4ac5-be1b-cdeec1096218
+			summarizeBy: none
+			sourceColumn: Name
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Customer's street address
+		column Address
+			dataType: string
+			lineageTag: 67fe9164-a135-411a-99e9-75c63593d529
+			summarizeBy: none
+			sourceColumn: Address
+
+			annotation SummarizationSetBy = Automatic
+
+		/// City where the customer resides
+		column City
+			dataType: string
+			lineageTag: b3d604cb-dbc7-49d1-8b77-fb2d8c3d27b0
+			dataCategory: City
+			summarizeBy: none
+			sourceColumn: City
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Abbreviated state or province code
+		column 'State Code'
+			dataType: string
+			lineageTag: 5b3e667a-b660-47a2-b37a-6f8fc0b005aa
+			summarizeBy: none
+			sourceColumn: State Code
+
+			annotation SummarizationSetBy = Automatic
+
+		/// State or province where the customer resides
+		column State
+			dataType: string
+			lineageTag: 866e9eeb-60e7-4f34-a758-699b2f08d6f5
+			summarizeBy: none
+			sourceColumn: State
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Postal or ZIP code for the customer's address
+		column 'Zip Code'
+			dataType: string
+			lineageTag: a52eaa3b-91b6-4d76-9b98-9efe5ec553aa
+			summarizeBy: none
+			sourceColumn: Zip Code
+
+			annotation SummarizationSetBy = Automatic
+
+		/// ISO country code for the customer's location
+		column 'Country Code'
+			dataType: string
+			lineageTag: a96c9024-09b2-471e-bffa-8c045ec3c07e
+			dataCategory: Caption
+			summarizeBy: none
+			sourceColumn: Country Code
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Country where the customer resides
+		column Country
+			dataType: string
+			lineageTag: 2e529497-a682-465f-bd24-9563ce148b50
+			dataCategory: Country
+			summarizeBy: none
+			sourceColumn: Country
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Continent where the customer is located
+		column Continent
+			dataType: string
+			lineageTag: 98a38c06-5477-41f6-9faa-c6b3d95d215b
+			dataCategory: Continent
+			summarizeBy: none
+			sourceColumn: Continent
+
+			annotation SummarizationSetBy = Automatic
+
+		/// Customer's date of birth
+		column Birthday
+			dataType: dateTime
+			formatString: Long Date
+			lineageTag: da3e313f-fb00-4616-8e87-e2512d60a28b
+			summarizeBy: none
+			sourceColumn: Birthday
+
+			annotation SummarizationSetBy = Automatic
+
+			annotation UnderlyingDateTimeDataType = Date
+
+		/// Customer's age in years
+		column Age
+			dataType: int64
+			formatString: 0
+			lineageTag: baeb7390-137d-48e5-a419-00d4960d2652
+			summarizeBy: none
+			sourceColumn: Age
+
+			annotation SummarizationSetBy = Automatic
+
+		partition Customer = m
+			mode: import
+			source =
+					let
+					    Source = Sql.Databases(Server),
+					    Database = Source{[Name=Database]}[Data],
+					    dbo_Customer = Database{[Schema="dbo",Item="Customer"]}[Data],
+					    #"Filtered Rows" = Table.SelectRows(dbo_Customer, each ([Country] <> "Canada" and [Country] <> "Germany" and [Country] <> "Netherlands"))
+					in
+					    #"Filtered Rows"
+
+		annotation PBI_NavigationStepName = Navigation
+
+		annotation PBI_ResultType = Table
+
+		annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["OBJECTS_WITH_NO_DESCRIPTION"]}
+
