@@ -46,6 +46,8 @@ createOrReplace
 
 			annotation SummarizationSetBy = Automatic
 
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["UNNECESSARY_COLUMNS"]}
+
 		/// Used for sorting Year Quarter
 		column 'Year Quarter Number'
 			dataType: int64
@@ -176,6 +178,7 @@ createOrReplace
 			dataType: boolean
 			isHidden
 			formatString: """TRUE"";""TRUE"";""FALSE"""
+			isAvailableInMdx: false
 			displayFolder: 5. Day
 			lineageTag: df0f8904-f559-4c5b-aae8-70618315bbd9
 			summarizeBy: none
@@ -185,11 +188,14 @@ createOrReplace
 
 			annotation SummarizationSetBy = Automatic
 
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["UNNECESSARY_COLUMNS"]}
+
 		/// Accumulated work day no from first date in calendar
 		column 'Working Day Number'
 			dataType: int64
 			isHidden
 			formatString: 0
+			isAvailableInMdx: false
 			displayFolder: 5. Day
 			lineageTag: 5e4ba9a4-846b-4335-8370-41640148f1f2
 			summarizeBy: none
@@ -198,6 +204,8 @@ createOrReplace
 			changedProperty = IsHidden
 
 			annotation SummarizationSetBy = Automatic
+
+			annotation BestPracticeAnalyzer_IgnoreRules = {"RuleIDs":["UNNECESSARY_COLUMNS"]}
 
 		column 'Is History'
 			dataType: int64
@@ -265,7 +273,7 @@ createOrReplace
 			calendarColumnGroup = date
 				primaryColumn: Date
 
-		annotation PBI_ResultType = Table
-
 		annotation PBI_NavigationStepName = Navigation
+
+		annotation PBI_ResultType = Table
 
